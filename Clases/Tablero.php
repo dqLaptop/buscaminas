@@ -18,7 +18,8 @@ class Tablero
     }
     //Hacer sobrecarga del constructor
 
-    function __toString() //Modificar que debe incluir las pistas
+
+    function __toString()
     {
         $cad = "";
         for ($i = 0; $i < $this->tam; $i++) {
@@ -97,5 +98,10 @@ class Tablero
         $this->terminado = $terminado;
 
         return $this;
+    }
+
+    public function getID()
+    {
+        return $this->ID;
     }
 }
