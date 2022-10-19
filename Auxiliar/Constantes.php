@@ -6,6 +6,5 @@ class Constantes
     static $usuario = 'isabel';
     static $password = 'isabel123';
     static $tablaUsuario = 'Usuario';
-    static $tablaTablero = 'Tablero';
-    static $tablaPartidas = 'Partida';
+    static $tablaPartida = 'Partida';
 }

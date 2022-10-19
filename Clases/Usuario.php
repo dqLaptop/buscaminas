@@ -1,28 +1,29 @@
 <?php
 class Usuario
 {
-    public static $COD;
+    public $cod;
+    public $email;
     public $nomGuerra;
     private $contraseña;
     public $ganadas;
     public $realizadas;
     private $verificado;
 
-    function __construct($cod, $nom, $contraseña, $ganadas, $realizadas, $verificado)
+    function __construct($cod, $nom, $contraseña, $ganadas, $realizadas, $verificado, $email)
     {
         $this->nomGuerra = $nom;
         $this->contraseña = $contraseña;
         $this->ganadas = $ganadas;
         $this->realizadas = $realizadas;
         $this->verificado = $verificado;
-        self::$COD = $cod;
+        $this->cod = $cod;
+        $this->email = $email;
     }
     function __toString()
     {
-        return "Usuario{" . self::$COD . ", " . $this->nomGuerra . ", " . $this->ganadas . ", " . $this->realizadas . ", " . $this->verificado . " }";
+        return "Usuario{" . $this->cod . ", " . $this->nomGuerra . ", " . $this->ganadas . ", " . $this->realizadas . ", " . $this->verificado . ", " . $this->email . " }";
     }
     //--------------------------------------------Getter&setter--------------------------------------
-
 
     public function getNomGuerra()
     {
@@ -58,9 +59,9 @@ class Usuario
         return $this;
     }
 
-    public function getCOD()
+    public function getCod()
     {
-        return $this->COD;
+        return $this->cod;
     }
 
     public function getVerificado()
@@ -70,6 +71,17 @@ class Usuario
     public function setVerificado($verificado)
     {
         $this->verificado = $verificado;
+
+        return $this;
+    }
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = $email;
 
         return $this;
     }

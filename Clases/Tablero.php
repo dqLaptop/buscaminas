@@ -1,22 +1,35 @@
 <?php
 class Tablero
 {
-
     public $tablero;
     public $minas;
     public $tam;
-    public $terminado;
+    public $codigo;
     public static $ID;
 
-    function __construct($tam, $minas)
+    public function __construct()
     {
-        $this->terminado = false;
-        $this->tablero = array();
-        $this->tam = $tam;
-        $this->minas = $minas;
-        self::$ID++ . "A";
+        $argumentos = func_get_args();
+        $nArg = func_num_args();
+        if (method_exists($this, $metodo = '__construct' . $nArg)) {
+            call_user_func_array(array($this, $metodo), $argumentos);
+        }
     }
-    //Hacer sobrecarga del constructor
+    private function __construct2($tam, $minas)
+    {
+        $this->minas = $minas;
+        $this->tam = $tam;
+        $this->tablero = [];
+        self::$ID++;
+        $this->codigo = self::$ID . 'A';
+    }
+    private function __construct4($id, $tablero, $tam, $minas)
+    {
+        $this->minas = $minas;
+        $this->tam = $tam;
+        $this->tablero = $tablero;
+        $this->codigo = $id;
+    }
 
 
     function __toString()
@@ -24,7 +37,7 @@ class Tablero
         $cad = "";
         for ($i = 0; $i < $this->tam; $i++) {
             if ($this->tablero[$i] == -1) {
-                $cad = $cad . ' ¡¡¡ BUM !!! ';
+                $cad = $cad . ' BUM ';
             } else {
                 $cad = $cad . $this->tablero[$i] . ' ';
             }
@@ -35,7 +48,7 @@ class Tablero
     {
         $cad = "";
         for ($i = 0; $i < $this->tam; $i++) {
-            if ($this->tablero[$i] == -2) {
+            if ($this->tablero[$i] === -2) {
                 $cad = $cad . ' --- ';
             } else {
                 $cad = $cad . ' ' . $this->tablero[$i] . ' ';
@@ -47,13 +60,21 @@ class Tablero
     {
         $tableroJugador[$pos] = $tablero[$pos];
     }
+    function formarTableroJug()
+    {
+        for ($i = 0; $i < $this->tam; $i++) {
+            $this->tablero[$i] = -2;
+        }
+        return $this->tablero;
+    }
 
-    function formarTablero()
+    function formarTableroOculto()
     {
         for ($i = 0; $i < $this->tam; $i++) {
             $this->tablero[$i] = 0;
         }
         $this->colocarMina();
+        $this->ColocarPista();
         return $this->tablero;
     }
 
@@ -67,25 +88,26 @@ class Tablero
             }
         }
     }
-    function ComprobarSiHayMina($pos)
+    function HayMina($pos)
     {
-        $resultado = 0;
-        if ($this->tablero[$pos] == -1) {
-            $resultado = 1;
-        }
-        if ($pos - 1 >= 0) {
-            if ($this->tablero[$pos - 1] == -1) {
-                $this->tablero[$pos]++;
-                $resultado = 2;
+        return $this->tablero[$pos] == -1;
+    }
+    function ColocarPista()
+    {
+        for ($i = 0; $i < $this->tam; $i++) {
+            if ($this->tablero[$i] == -1) {
+                if ($i - 1 >= 0) {
+                    if ($this->tablero[$i - 1] != -1) {
+                        $this->tablero[$i - 1]++;
+                    }
+                }
+                if ($i + 1 < $this->tam) {
+                    if ($this->tablero[$i + 1] != -1) {
+                        $this->tablero[$i + 1]++;
+                    }
+                }
             }
         }
-        if ($pos + 1 <= $this->length - 1) {
-            if ($this->tablero[$pos + 1] == -1) {
-                $this->tablero[$pos]++;
-                $resultado = 2;
-            }
-        }
-        return $resultado;
     }
 
     public function getTerminado()
@@ -103,5 +125,26 @@ class Tablero
     public function getID()
     {
         return $this->ID;
+    }
+    public function obtenerTam(){
+        return count($this->tablero);
+    }
+
+    public function getCodigo()
+    {
+        return $this->codigo;
+    }
+    public function getMinas()
+    {
+        return $this->minas;
+    }
+    public function obtenerValorTablero($i)
+    {
+        return $this->tablero[$i];
+    }
+
+    public function getTam()
+    {
+        return $this->tam;
     }
 }
