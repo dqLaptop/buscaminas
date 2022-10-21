@@ -1,4 +1,8 @@
 <?php
+require_once __DIR__ . '/Constantes.php';
+require_once __DIR__ . '/../Clases/Usuario.php';
+require_once __DIR__ . '/../Clases/Tablero.php';
+require_once __DIR__ . '/../Clases/Partida.php';
 class ConexionEstatica
 {
     private static $conexion;
@@ -28,7 +32,7 @@ class ConexionEstatica
             $resultados = $stmt->get_result();
             if ($resultados->num_rows != 0) {
                 while ($fila = $resultados->fetch_array()) {
-                    $u = new Usuario($fila['Cod'], $fila['NomGuerra'], $fila['Clave'], $fila['Ganadas'], $fila['Realizadas'], $fila['Verificado'], $fila['Email']);
+                    $u = new Usuario($fila['Cod'], $fila['Email'], $fila['NomGuerra'], $fila['Clave'], $fila['Ganadas'], $fila['Realizadas'], $fila['Verificado']);
                 }
             }
         } catch (Exception $e) {
@@ -41,12 +45,14 @@ class ConexionEstatica
     }
     static function insertUsuario($email, $nombre, $clave)
     {
+        $zero = 0;
+        $id = '';
         $filasAfectadas = 0;
-        $query = "INSERT INTO " . Constantes::$tablaPartida . "(Cod,Email,NomGuerra,Clave,Ganadas,Realizadas,Verificacion) VALUES (?,?,?,?,?,?,?)";
+        $query = "INSERT INTO " . Constantes::$tablaUsuario . "(Cod,Email,NomGuerra,Clave,Ganadas,Realizadas,Verificado) VALUES (?,?,?,?,?,?,?)";
         self::abrirConexion();
         try {
             $stmt = self::$conexion->prepare($query);
-            $stmt->bind_param("isssiib", null, $email, $nombre, $clave, 0, 0, 0);
+            $stmt->bind_param("ssssiii", $id, $email, $nombre, $clave, $zero, $zero, $zero);
             $stmt->execute();
             $filasAfectadas = $stmt->affected_rows;
         } catch (Exception $e) {
@@ -82,11 +88,31 @@ class ConexionEstatica
     static function modificarVerificacion($cod, $verificacion)
     {
         $filasAfectadas = 0;
-        $query = "UPDATE " . Constantes::$tablaUsuario . " set Verificacion  = ?  WHERE Cod = ?";
+        $query = "UPDATE " . Constantes::$tablaUsuario . " set Verificado  = ?  WHERE Cod = ?";
         self::abrirConexion();
         try {
             $stmt = self::$conexion->prepare($query);
-            $stmt->bind_param("si", $verificacion, $cod);
+            $stmt->bind_param("ii", $verificacion, $cod);
+            $stmt->execute();
+            $filasAfectadas = $stmt->affected_rows;
+        } catch (Exception $e) {
+            $filasAfectadas = ['codigo' => $e->getCode(), 'mensaje' => $e->getMessage()];
+        } finally {
+            self::cerrarConexion();
+        }
+        return $filasAfectadas;
+    }
+    static function modificarUsuarioPartidas($u)
+    {
+        $a = $u->getGanadas();
+        $b = $u->getRealizadas();
+        $c = $u->getCod();
+        $filasAfectadas = 0;
+        $query = "UPDATE " . Constantes::$tablaUsuario . " set Ganadas = ? Realizadas=?  WHERE Cod = ?";
+        self::abrirConexion();
+        try {
+            $stmt = self::$conexion->prepare($query);
+            $stmt->bind_param("iii", $a, $b, $c);
             $stmt->execute();
             $filasAfectadas = $stmt->affected_rows;
         } catch (Exception $e) {
@@ -98,11 +124,15 @@ class ConexionEstatica
     }
     static function insertarSituacionPartida($partida, $t, $tj)
     {
+        $a = $partida->getCod_usu();
+        $b = $partida->getCod_partida();
+        $c = $partida->getCod_tablero();
+        $d = $partida->getTerminada();
         $query = "INSERT INTO " . Constantes::$tablaPartida . "(Id_usu,Id,id_tablero,Terminada,TableroOculto,TableroJug) VALUES (?,?,?,?,?,?)";
         self::abrirConexion();
         try {
             $stmt = self::$conexion->prepare($query);
-            $stmt->bind_param("iisiss", $partida->getCod_usu(), $partida->getCod_partida(), $partida->getCod_tablero(), $partida->getTerminada(), $t, $tj);
+            $stmt->bind_param("iisiss", $a, $b, $c, $d, $t, $tj);
             $stmt->execute();
             $filasAfectadas = $stmt->affected_rows;
         } catch (Exception $e) {
@@ -114,12 +144,15 @@ class ConexionEstatica
     }
     static function modificarSituacionPartida($partida, $t, $tj)
     {
+        $l = $partida->getCod_partida();
+        $z = $partida->getCod_tablero();
+        $r = $partida->getTerminada();
         $filasAfectadas = 0;
         $query = "UPDATE " . Constantes::$tablaPartida . " set Id  = ?, Id_tablero=?, Terminada=?, TableroOculto=?, TableroJug = ?  WHERE Id = ?";
         self::abrirConexion();
         try {
             $stmt = self::$conexion->prepare($query);
-            $stmt->bind_param("isissi", $partida->getCod_partida(), $partida->getCod_tablero(), $partida->getTerminada(), $t, $tj, $partida->getCod_partida());
+            $stmt->bind_param("isissi", $l, $z, $r, $t, $tj, $l);
             $stmt->execute();
             $filasAfectadas = $stmt->affected_rows;
         } catch (Exception $e) {
@@ -131,12 +164,14 @@ class ConexionEstatica
     }
     static function modificarSituacionPartida2($partida)
     {
+        $b = $partida->getCod_partida();
+        $x = $partida->getTerminada();
         $filasAfectadas = 0;
         $query = "UPDATE " . Constantes::$tablaPartida . " set Terminada=? WHERE Id = ?";
         self::abrirConexion();
         try {
             $stmt = self::$conexion->prepare($query);
-            $stmt->bind_param("ii", $partida->getTerminada(), $partida->getCod_partida());
+            $stmt->bind_param("ii", $x, $b);
             $stmt->execute();
             $filasAfectadas = $stmt->affected_rows;
         } catch (Exception $e) {

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/Tablero.php';
+require_once __DIR__ .'/Usuario.php';
 class Partida
 {
     public $cod_usu;
@@ -9,14 +10,14 @@ class Partida
     public $tableroOculto;
     public $terminada;
 
-    function __construct($id, $id_tablero, $t, $tj, $terminada,$cod)
+    function __construct($id, $id_tablero, $t, $tj, $terminada, $cod)
     {
         $this->cod_tablero = $id_tablero;
         $this->cod_partida = $id;
         $this->tableroJugador = $tj;
         $this->tableroOculto = $t;
         $this->terminada = $terminada;
-        $this->cod_usu=$cod;
+        $this->cod_usu = $cod;
     }
     function jugar($pos)
     {
@@ -29,7 +30,7 @@ class Partida
             }
         }
         if ($casilla > 0) {
-            if (!$this->tableroOculto->hayMina()) {
+            if (!$tabocul->hayMina()) {
                 $this->tableroOculto->Jugada($pos, $this->tableroJug);
                 $cad = $this->PasarSituacionPartidaACadena();
                 ConexionEstatica::modificarSituacionPartida($this, $cad[0], $cad[1]);
@@ -48,24 +49,27 @@ class Partida
     }
     public function PasarSituacionPartidaACadena()
     {
+        $tabocul = $this->tableroOculto;
+        $tJug=$this->tableroJugador;
         $cad = '';
-        for ($i = 0; $i < $this->tableroOculto->getTam(); $i++) {
-            if ($this->tableroOculto->obtenerValorTablero($i) === -1) {
+        for ($i = 0; $i < $tabocul->getTam(); $i++) {
+            if ($tabocul->obtenerValorTablero($i) === -1) {
                 $cad = $cad . '#BUM';
             } else {
-                $cad = $cad . '#' . $this->tableroOculto->obtenerValorTablero($i);
+                $cad = $cad . '#' . $tabocul->obtenerValorTablero($i);
             }
         }
         $cadena = '';
-        for ($i = 0; $i < $this->tableroJug->getTam(); $i++) {
-            if ($this->tableroJug->obtenerValorTablero($i) === -2) {
+        for ($i = 0; $i < $tJug->getTam(); $i++) {
+            if ($tJug->obtenerValorTablero($i) === -2) {
                 $cadena = $cadena . '#---';
             } else {
-                $cadena = $cadena . '#' . $this->tableroJug->obtenerValorTablero($i);
+                $cadena = $cadena . '#' . $tJug->obtenerValorTablero($i);
             }
         }
         $cadenaTablero = [];
-        array_push($cadenaTablero, $cad, $cadena);
+        array_push($cadenaTablero, $cad);
+        array_push($cadenaTablero, $cadena);
         return $cadenaTablero;
     }
 

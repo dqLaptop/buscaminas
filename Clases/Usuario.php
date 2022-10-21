@@ -9,10 +9,10 @@ class Usuario
     public $realizadas;
     private $verificado;
 
-    function __construct($cod, $nom, $contraseña, $ganadas, $realizadas, $verificado, $email)
+    function __construct($cod,$email,$nomGuerra,$clave,$ganadas,$realizadas,$verificado)
     {
-        $this->nomGuerra = $nom;
-        $this->contraseña = $contraseña;
+        $this->nomGuerra = $nomGuerra;
+        $this->contraseña = $clave;
         $this->ganadas = $ganadas;
         $this->realizadas = $realizadas;
         $this->verificado = $verificado;
