@@ -5,8 +5,6 @@ class Constantes
     static $bbdd = 'Buscaminas';
     static $usuario = 'isabel';
     static $password = 'isabel123';
-    static $tablaUsuario = 'Usuarios';
-    static $tablaTablero = 'Tableros';
-    static $tablaPartidas = 'Partidas';
-    static $tablaJugadas = 'Jugadas';
+    static $tablaUsuario = 'Usuario';
+    static $tablaPartida = 'Partida';
 }

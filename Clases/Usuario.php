@@ -1,27 +1,30 @@
 <?php
 class Usuario
 {
-    public static $COD;
+    public $cod;
+    public $email;
     public $nomGuerra;
     private $contraseña;
     public $ganadas;
     public $realizadas;
+    private $verificado;
 
-    function __construct($nom, $contraseña)
+    function __construct($cod,$email,$nomGuerra,$clave,$ganadas,$realizadas,$verificado)
     {
-        $this->nomGuerra = $nom;
-        $this->contraseña = $contraseña;
-        $this->ganadas = 0;
-        $this->realizadas = 0;
-        self::$COD++;
+        $this->nomGuerra = $nomGuerra;
+        $this->contraseña = $clave;
+        $this->ganadas = $ganadas;
+        $this->realizadas = $realizadas;
+        $this->verificado = $verificado;
+        $this->cod = $cod;
+        $this->email = $email;
     }
     function __toString()
     {
-        return "Usuario{".self::$COD.", ".$this->nomGuerra.", ".$this->ganadas.", ".$this->realizadas." }";
+        return "Usuario{" . $this->cod . ", " . $this->nomGuerra . ", " . $this->ganadas . ", " . $this->realizadas . ", " . $this->verificado . ", " . $this->email . " }";
     }
     //--------------------------------------------Getter&setter--------------------------------------
 
-    
     public function getNomGuerra()
     {
         return $this->nomGuerra;
@@ -36,7 +39,7 @@ class Usuario
     {
         return $this->ganadas;
     }
-    
+
     public function setGanadas($ganadas)
     {
         $this->ganadas = $ganadas;
@@ -56,8 +59,30 @@ class Usuario
         return $this;
     }
 
-    public function getCOD()
+    public function getCod()
     {
-        return $this->COD;
+        return $this->cod;
+    }
+
+    public function getVerificado()
+    {
+        return $this->verificado;
+    }
+    public function setVerificado($verificado)
+    {
+        $this->verificado = $verificado;
+
+        return $this;
+    }
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
     }
 }
